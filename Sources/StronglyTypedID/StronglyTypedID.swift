@@ -1,0 +1,6 @@
+public struct StronglyTypedID {
+    public private(set) var text = "Hello, World!"
+
+    public init() {
+    }
+}
