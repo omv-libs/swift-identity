@@ -1,6 +1,6 @@
 //
 //  StronglyTypedID+TestingTests.swift
-//  
+//
 //
 //  Created by Óscar Morales Vivó on 3/21/23.
 //

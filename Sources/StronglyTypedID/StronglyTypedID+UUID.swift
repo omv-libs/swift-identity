@@ -1,6 +1,6 @@
 //
 //  StronglyTypedID+UUID.swift
-//  
+//
 //
 //  Created by Óscar Morales Vivó on 3/21/23.
 //
@@ -16,6 +16,6 @@ public extension StronglyTypedID where RawValue == UUID {
      - Returns: A new unique value of the `UUID`-based strongly typed ID.
      */
     static func unique() -> Self {
-        return .init(rawValue: UUID())!
+        .init(rawValue: UUID())!
     }
 }

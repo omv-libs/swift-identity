@@ -17,7 +17,8 @@ import Foundation
  types should work as long as encoding/decoding doesn't lose precision (it's probably not a good idea to use them for
  anything that isn't strictly local).
  */
-public protocol StronglyTypedID: RawRepresentable, Codable, CustomStringConvertible, Hashable where RawValue: Codable, RawValue: Hashable {}
+public protocol StronglyTypedID: RawRepresentable, Codable, CustomStringConvertible, Hashable
+    where RawValue: Codable, RawValue: Hashable {}
 
 public extension StronglyTypedID {
     /**
@@ -25,7 +26,7 @@ public extension StronglyTypedID {
      passed to logging and reporting methods.
      */
     var description: String {
-        return String(describing: rawValue)
+        String(describing: rawValue)
     }
 }
 
