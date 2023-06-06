@@ -1,6 +1,6 @@
 //
 //  StronglyTypedID+Codable.swift
-//  
+//
 //
 //  Created by Óscar Morales Vivó on 3/21/23.
 //
@@ -14,7 +14,7 @@ import Foundation
 public extension StronglyTypedID {
     init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
-        self.init(rawValue: try container.decode(RawValue.self))!
+        try self.init(rawValue: container.decode(RawValue.self))!
     }
 
     func encode(to encoder: Encoder) throws {

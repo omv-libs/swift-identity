@@ -1,5 +1,5 @@
-import XCTest
 import StronglyTypedID
+import XCTest
 
 final class StronglyTypedIDTests: XCTestCase {
     // Mostly testing that the Swift type system does what we expect.
