@@ -39,3 +39,9 @@ public extension StronglyTypedID where Self: Comparable, RawValue: Comparable {
         lhs.rawValue < rhs.rawValue
     }
 }
+
+@freestanding(declaration)
+public macro StronglyTypedID<T>(_ name: String, backing: T.Type, adopts: String...) = #externalMacro(
+    module: "StronglyTypedIDMacros",
+    type: "StronglyTypedIDMacro"
+)
