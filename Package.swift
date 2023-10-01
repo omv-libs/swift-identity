@@ -22,8 +22,6 @@ let package = Package(
     dependencies: [
         // Depend on the Swift 5.9 release of SwiftSyntax
         .package(url: "https://github.com/apple/swift-syntax.git", from: "509.0.0"),
-        // Depend on Pointfreeco's swift-macro-testing so we can properly test the macro fix-its.
-        .package(url: "https://github.com/pointfreeco/swift-macro-testing", from: "0.1.0")
     ],
     targets: [
         .macro(
@@ -42,7 +40,6 @@ let package = Package(
             dependencies: [
                 "StronglyTypedID",
                 "StronglyTypedIDMacros",
-                .product(name: "MacroTesting", package: "swift-macro-testing"),
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax")
             ]
         )

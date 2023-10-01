@@ -40,8 +40,16 @@ public extension StronglyTypedID where Self: Comparable, RawValue: Comparable {
     }
 }
 
-@freestanding(declaration)
-public macro StronglyTypedID<T>(_ name: String, backing: T.Type, adopts: String...) = #externalMacro(
+/**
+ A macro that declares a strongly typed ID.
+
+ - Parameters
+   - name: The name of the new ID type. Must be a valid type identifier at compile time.
+   - backing: The type that backs the ID type, its `rawValue`
+   - adopts: Optionally, a comma separated list of protocols that the ID type also adopts.
+ */
+@freestanding(declaration, names: arbitrary)
+public macro StronglyTypedID<T, each U>(_ name: StaticString, backing: T.Type, adopts: repeat each U) = #externalMacro(
     module: "StronglyTypedIDMacros",
     type: "StronglyTypedIDMacro"
 )
