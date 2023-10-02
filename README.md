@@ -11,23 +11,27 @@ folks may just throw a string wherever but it's not like their programming langu
 
 ## Support
 
-This should work fine everywhere that Swift 5.7 can be used. It's currently configured to work on any platform supported
-by Xcode 14 but I would happily accept a (tested) PR that adds support to Apple system versions before that and/or other
-platforms.
+This should work fine everywhere that Swift 5.9 can be used. It's currently configured to work on any platform supported
+by Xcode 15. If you need support for earlier versions of any Apple platforms you can use version 1.0.0 of the package,
+since macro support is the only dependency forcing the newer toolset and minimum OS version deployment.
 
 ## Adoption
 
-Just declare a type that adopts the `StronglyTypedID` protocol, then add its `rawValue` —the Swift type system makes
-us do that if we want the ID types to be distinct, which is much of the point of this exercise—.
- 
+The easiest way to adopt is to just use the `#StronglyTypedID` macro. Its two basic parameters being the name of the ID
+type and its backing type.
+
+The macro just declares a value type that complies with the `StronglyTypedID` protocol as well as its `rawValue`
+stored property.
+
+Optionally, you can declare compliance with other protocols using the macro's `adopts` variadic parameter. This allows
+for setting a hierarchy of ID types if that is a desirable set up.
+
 For example if we want to manage our clowns with value model types, as is the current fashion, and identify them using
 `UUID` values, we'd declare the following:
  
 ```swift
 struct Clown: Identifiable {
-    struct ID: StronglyTypedID {
-        var rawValue: UUID
-    }
+    #StronglyTypedID("ID", backing: UUID)
     
     var id: ID
     
@@ -48,9 +52,7 @@ outside since Swift protocols don't allow for internal types. So if we ended up 
 we'd end up with the following:
 
 ```swift
-struct ClownID: StronglyTypedID {
-    var rawValue: UUID
-}
+#StronglyTypedID("ClownID", backing: UUID)
 
 protocol Clown: Identifiable {
     var id: ClownID { get }
@@ -65,7 +67,40 @@ protocol Clown: Identifiable {
     
     /* ... */
 }
-``` 
+```
+
+Of course if we became victims of feature creep and started building a comprehensive circus HR solution we may end up
+wanting to make sure that our clowns are, despite everything they've done, treated the same as any other human being
+working for the circus. As such you'd just need to add common protocols to the ID types as to be able to use them in
+common functionality:
+
+```swift
+protocol Performer {
+    var salary: Decimal
+    
+    [...]
+}
+
+protocol PerformerID: StronglyTypedID {}
+
+struct Clown: Identifiable, Performer {
+    #StronglyTypedID("ID", backing: UUID, adopts: PerformerID)
+    
+    [...]
+}
+
+struct Acrobat: Identifiable {
+    #StronglyTypedID("ID", backing: UUID, adopts: PerformerID)
+    
+    [...]
+}
+
+protocol Payroll {
+    func pay(performer: PerformerID, period: TimeInterval) -> Decimal
+    
+    [...]
+}
+```  
 
 ## Codability
 
@@ -147,4 +182,4 @@ extension Clown.ID: ExpressibleByStringInterpolation {}
 The main reason we don't include this into `String`-based IDs by default is that we don't know which ones would support
 it (just because a strongly typed ID is `String`-based doesn't mean it'll support any random `String` as a raw value)
 and because generally you wouldn't want initialization by string constant to happen by accident in the real
-application's code —you can still use `init(rawValue:)` them into being if needed—.
+application's code —you can still use `init(rawValue:)` to bring them into being if needed—.
