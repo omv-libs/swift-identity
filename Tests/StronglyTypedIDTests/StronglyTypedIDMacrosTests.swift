@@ -6,10 +6,10 @@
 //
 
 import MacroTesting
+import StronglyTypedID
 import SwiftDiagnostics
 import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
-import StronglyTypedID
 import XCTest
 
 // Macro implementations build for the host, so the corresponding module is not available when cross-compiling.
@@ -54,7 +54,7 @@ final class StronglyTypedIDMacroTests: XCTestCase {
     }
 
     func testMacroWithNoExtraAdoption() throws {
-#if canImport(StronglyTypedIDMacros)
+        #if canImport(StronglyTypedIDMacros)
         assertMacroExpansion(
             """
             #StronglyTypedID(\"ID\", backing: UUID)
@@ -66,13 +66,13 @@ final class StronglyTypedIDMacroTests: XCTestCase {
             """,
             macros: testMacros
         )
-#else
+        #else
         throw XCTSkip("macros are only supported when running tests for the host platform")
-#endif
+        #endif
     }
 
     func testMacroWithExtraAdoptions() throws {
-#if canImport(StronglyTypedIDMacros)
+        #if canImport(StronglyTypedIDMacros)
         assertMacroExpansion(
             """
             #StronglyTypedID(\"ImageID\", backing: UUID, adopts: ResourceID, FileID, MediaID)
@@ -84,8 +84,8 @@ final class StronglyTypedIDMacroTests: XCTestCase {
             """,
             macros: testMacros
         )
-#else
+        #else
         throw XCTSkip("macros are only supported when running tests for the host platform")
-#endif
+        #endif
     }
 }

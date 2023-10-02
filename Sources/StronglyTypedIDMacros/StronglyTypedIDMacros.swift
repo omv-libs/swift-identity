@@ -25,7 +25,7 @@ public struct StronglyTypedIDMacro {}
 extension StronglyTypedIDMacro: DeclarationMacro {
     public static func expansion(
         of node: some FreestandingMacroExpansionSyntax,
-        in context: some MacroExpansionContext
+        in _: some MacroExpansionContext
     ) throws -> [DeclSyntax] {
         let argumentList = node.argumentList
         guard argumentList.count >= 2 else {
