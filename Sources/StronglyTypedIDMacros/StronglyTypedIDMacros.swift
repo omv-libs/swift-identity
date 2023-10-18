@@ -70,7 +70,7 @@ extension StronglyTypedIDMacro: DeclarationMacro {
 
     private static func extractStringArgument(_ argument: LabeledExprSyntax) -> String {
         if let stringLiteral = argument.expression.as(StringLiteralExprSyntax.self) {
-            return "\(stringLiteral.segments)"
+            "\(stringLiteral.segments)"
         } else {
             // We're only supposed to call this with `StaticString` parameters, so if we're here it's toolset error or
             // out of sync macro declaration.
