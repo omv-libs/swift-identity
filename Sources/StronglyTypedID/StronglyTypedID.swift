@@ -46,7 +46,9 @@ public extension StronglyTypedID where Self: Comparable, RawValue: Comparable {
  - Parameters
    - name: The name of the new ID type. Must be a valid type identifier at compile time.
    - backing: The type that backs the ID type, its `rawValue`
-   - adopts: Optionally, a comma separated list of protocols that the ID type also adopts.
+   - adopts: Optionally, a comma separated list of protocols that the ID type also adopts. Currently Swift doesn't allow
+ for a declaration that would check that the parameters sent are as described, but the expanded macro will fail to build
+ if any of the parameters isn't a protocol.
  */
 @freestanding(declaration, names: arbitrary)
 public macro StronglyTypedID<T, each U>(_ name: StaticString, backing: T.Type, adopts: repeat each U) = #externalMacro(
