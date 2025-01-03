@@ -27,22 +27,22 @@ extension StronglyTypedIDMacro: DeclarationMacro {
         of node: some FreestandingMacroExpansionSyntax,
         in _: some MacroExpansionContext
     ) throws -> [DeclSyntax] {
-        let argumentList = node.argumentList
-        guard argumentList.count >= 2 else {
+        let arguments = node.arguments
+        guard arguments.count >= 2 else {
             // This should only happen due to toolset error or out of sync macro declaration so let's blow up.
-            preconditionFailure("Unexpected argument count \(node.argumentList.count). Toolset shouldn't have made it this far")
+            preconditionFailure("Unexpected argument count \(arguments.count). Toolset shouldn't have made it this far")
         }
 
         // Get the ID type name from the first parameter.
-        let typeName = extractStringArgument(argumentList[argumentList.startIndex])
+        let typeName = extractStringArgument(arguments[arguments.startIndex])
 
         // Grab the second parameter (backing type).
-        let backingIndex = argumentList.index(after: argumentList.startIndex)
-        let backingArgument = argumentList[backingIndex].expression
+        let backingIndex = arguments.index(after: arguments.startIndex)
+        let backingArgument = arguments[backingIndex].expression
 
         // Check if there's adoption arguments and return a simplified declaration if not.
-        let firstAdoptionIndex = argumentList.index(after: backingIndex)
-        guard firstAdoptionIndex != argumentList.endIndex else {
+        let firstAdoptionIndex = arguments.index(after: backingIndex)
+        guard firstAdoptionIndex != arguments.endIndex else {
             // No adoptions, let's just return and build.
             let result =
                 """
@@ -54,7 +54,7 @@ extension StronglyTypedIDMacro: DeclarationMacro {
         }
 
         // Grab the adoptions identifiers.
-        let adoptions = argumentList[firstAdoptionIndex...].map { element in
+        let adoptions = arguments[firstAdoptionIndex...].map { element in
             "\(element.expression)"
         }
 
