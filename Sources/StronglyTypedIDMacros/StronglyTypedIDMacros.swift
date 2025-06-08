@@ -14,15 +14,15 @@ import SwiftSyntaxMacros
 @main
 struct StronglyTypedIDMacrosTestPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
-        StronglyTypedIDMacro.self
+        FreestandingStronglyTypedIDMacro.self
     ]
 }
 
-public struct StronglyTypedIDMacro {}
+public struct FreestandingStronglyTypedIDMacro {}
 
 // MARK: - DeclarationMacro Adoption
 
-extension StronglyTypedIDMacro: DeclarationMacro {
+extension FreestandingStronglyTypedIDMacro: DeclarationMacro {
     public static func expansion(
         of node: some FreestandingMacroExpansionSyntax,
         in _: some MacroExpansionContext

@@ -17,8 +17,8 @@ import Foundation
  types should work as long as encoding/decoding doesn't lose precision (it's probably not a good idea to use them for
  anything that isn't strictly local).
  */
-public protocol StronglyTypedID: RawRepresentable, Codable, CustomStringConvertible, Hashable
-    where RawValue: Codable, RawValue: Hashable {}
+public protocol StronglyTypedID: RawRepresentable, Codable, CustomStringConvertible, Hashable, Sendable
+    where RawValue: Codable & Hashable & Sendable {}
 
 public extension StronglyTypedID {
     /**
@@ -51,7 +51,7 @@ public extension StronglyTypedID where Self: Comparable, RawValue: Comparable {
  if any of the parameters isn't a protocol.
  */
 @freestanding(declaration, names: arbitrary)
-public macro StronglyTypedID<T, each U>(_ name: StaticString) = #externalMacro(
+public macro StronglyTypedID<T: Hashable & Codable & Sendable, each U>(_ name: StaticString) = #externalMacro(
     module: "StronglyTypedIDMacros",
-    type: "StronglyTypedIDMacro"
+    type: "FreestandingStronglyTypedIDMacro"
 )

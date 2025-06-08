@@ -17,7 +17,7 @@ import XCTest
 @testable import StronglyTypedIDMacros
 
 let testMacros: [String: Macro.Type] = [
-    "StronglyTypedID": StronglyTypedIDMacro.self
+    "StronglyTypedID": FreestandingStronglyTypedIDMacro.self
 ]
 #endif
 
