@@ -8,7 +8,6 @@ final class StronglyTypedIDTests: XCTestCase {
 
     // Mostly testing that the Swift type system does what we expect.
     func testComparableStronglyTypedID() {
-
         let dummyID1 = DummyIDType(rawValue: 7)
         let dummyID2 = DummyIDType(rawValue: 77)
 
