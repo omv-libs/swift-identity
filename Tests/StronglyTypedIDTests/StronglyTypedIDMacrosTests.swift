@@ -30,7 +30,7 @@ final class StronglyTypedIDMacroTests: XCTestCase {
     func testBuildSimpleMacro() throws {
         struct TestStruct: Identifiable {
             // Declaration has to happen in a different scope than creation. Within a local `struct` works.
-            #StronglyTypedID("TestID", backing: UUID)
+            #StronglyTypedID("TestID", backing: UUID.self)
 
             var id: TestID
         }
@@ -43,7 +43,7 @@ final class StronglyTypedIDMacroTests: XCTestCase {
     func testBuildMacroWithAdoptions() throws {
         struct TestStruct: Identifiable {
             // Declaration has to happen in a different scope than creation. Within a local `struct` works.
-            #StronglyTypedID("TestID", backing: UUID, adopts: SomeProtocol, SomeOtherProtocol)
+            #StronglyTypedID("TestID", backing: UUID.self, adopts: SomeProtocol.self, SomeOtherProtocol.self)
 
             var id: TestID
         }
