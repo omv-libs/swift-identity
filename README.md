@@ -17,21 +17,22 @@ since macro support is the only dependency forcing the newer toolset and minimum
 
 ## Adoption
 
-The easiest way to adopt is to just use the `#StronglyTypedID` macro. Its two basic parameters being the name of the ID
-type and its backing type.
+The easiest way to adopt is to just use the `#StronglyTypedID` macro. You only need to parameterize it with the type
+name and its backing type.
 
-The macro just declares a value type that complies with the `StronglyTypedID` protocol as well as its `rawValue`
-stored property.
+The macro declares a value type that complies with the `StronglyTypedID` protocol, sets its `RawValue` to be the
+specified backing type and adds the necessary stored `rawValue` stored property.
 
-Optionally, you can declare compliance with other protocols using the macro's `adopts` variadic parameter. This allows
-for setting a hierarchy of ID types if that is a desirable set up.
+Optionally, you can declare compliance with other protocols by listing them as the macro's type parameters after the
+backing type. This makes it easier to declare everything at once and also setting hierarchies of ID types if that is a
+desirable set up.
 
 For example if we want to manage our clowns with value model types, as is the current fashion, and identify them using
 `UUID` values, we'd declare the following:
  
 ```swift
 struct Clown: Identifiable {
-    #StronglyTypedID("ID", backing: UUID)
+    #StronglyTypedID<UUID>("ID")
     
     var id: ID
     
@@ -48,11 +49,11 @@ struct Clown: Identifiable {
 ```
 
 Nothing stops us from declaring similarly for reference types, although for `protocol` types we'd need to declare them
-outside since Swift protocols don't allow for internal types. So if we ended up with an abstract façade for our clowns
-we'd end up with the following:
+outside since Swift protocols cannot be nested inside other protocols. So if we ended up with an abstract façade for our
+clowns we'd end up with the following:
 
 ```swift
-#StronglyTypedID("ClownID", backing: UUID)
+#StronglyTypedID<UUID>("ClownID")
 
 protocol Clown: Identifiable {
     var id: ClownID { get }
@@ -76,31 +77,42 @@ common functionality:
 
 ```swift
 protocol Performer {
-    var salary: Decimal
-    
-    [...]
+    var hourlyWage: Decimal { get }
+
+    // ...
 }
 
 protocol PerformerID: StronglyTypedID {}
 
 struct Clown: Identifiable, Performer {
-    #StronglyTypedID("ID", backing: UUID, adopts: PerformerID)
-    
-    [...]
+    #StronglyTypedID<UUID, PerformerID>("ID")
+
+    var id: ID
+
+    let hourlyWage = Decimal(7.25)
+
+    // ...
 }
 
 struct Acrobat: Identifiable {
-    #StronglyTypedID("ID", backing: UUID, adopts: PerformerID)
-    
-    [...]
+    #StronglyTypedID<UUID, PerformerID>("ID")
+
+    var id: ID
+
+    let hourlyWage = Decimal(50.00)
+
+    // ...
 }
 
 protocol Payroll {
-    func pay(performer: PerformerID, period: TimeInterval) -> Decimal
-    
-    [...]
+    func pay(performer: some PerformerID, period: TimeInterval) -> Decimal
+
+    // ...
 }
-```  
+```
+
+The additional conformances can also be used for common protocols that require no additional work for compliance, like
+`Comparable` if required, or `Sendable`.
 
 ## Codability
 
@@ -134,7 +146,9 @@ supports. You'll probably also need to do something about those hex colors but t
 example.
 
 Then again, what would you need to do to _encode_ your UUID-based strongly typed IDs into something that the backend can
-chew on? _absolutely nothing_. They'll just encode themselves into the string form of the UUID and off you go.
+chew on? _absolutely nothing_. Usually, that is. As a gesture of friendship to long-suffering backend developers a
+`UUID`-backed strongly typed ID will encode in lowercase, since that's almost always what the backend expects. Other
+than that they'll just encode themselves into the string form of the UUID and off you go.
 
 ## Testability
 
@@ -183,3 +197,13 @@ The main reason we don't include this into `String`-based IDs by default is that
 it (just because a strongly typed ID is `String`-based doesn't mean it'll support any random `String` as a raw value)
 and because generally you wouldn't want initialization by string constant to happen by accident in the real
 application's code —you can still use `init(rawValue:)` to bring them into being if needed—.
+
+## Known Issues
+
+* Due to the vagaries of macro expansion, declaring `#StronglyTypedID` in the body of a function and then attempting to
+use the generated type will not work. This is not an expected use case except possibly in unit tests, and there's easy
+enough workarounds in that case. 
+* For additional conformances, the compiler will complain that the types should be listed as `any MyProtocol` and that
+it will become an error in a future language mode. Interestingly enough it doesn not complain for certain protocol types
+like `Sendable`. Ignore the warnings or add the conformances in an `extension` if treat warnings as errors is on. We
+will keep an eye on future language evolution in case more changes are needed.

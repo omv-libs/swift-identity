@@ -30,7 +30,7 @@ final class StronglyTypedIDMacroTests: XCTestCase {
     func testBuildSimpleMacro() throws {
         struct TestStruct: Identifiable {
             // Declaration has to happen in a different scope than creation. Within a local `struct` works.
-            #StronglyTypedID("TestID", backing: UUID.self)
+            #StronglyTypedID<UUID>("TestID")
 
             var id: TestID
         }
@@ -43,7 +43,7 @@ final class StronglyTypedIDMacroTests: XCTestCase {
     func testBuildMacroWithAdoptions() throws {
         struct TestStruct: Identifiable {
             // Declaration has to happen in a different scope than creation. Within a local `struct` works.
-            #StronglyTypedID("TestID", backing: UUID.self, adopts: SomeProtocol.self, SomeOtherProtocol.self)
+            #StronglyTypedID<UUID, SomeProtocol, SomeOtherProtocol>("TestID")
 
             var id: TestID
         }
@@ -56,7 +56,7 @@ final class StronglyTypedIDMacroTests: XCTestCase {
         #if canImport(StronglyTypedIDMacros)
         assertMacroExpansion(
             """
-            #StronglyTypedID(\"ID\", backing: UUID)
+            #StronglyTypedID<UUID>(\"ID\")
             """,
             expandedSource: """
             struct ID: StronglyTypedID {
@@ -74,7 +74,7 @@ final class StronglyTypedIDMacroTests: XCTestCase {
         #if canImport(StronglyTypedIDMacros)
         assertMacroExpansion(
             """
-            #StronglyTypedID(\"ImageID\", backing: UUID, adopts: ResourceID, FileID, MediaID)
+            #StronglyTypedID<UUID, ResourceID, FileID, MediaID>(\"ImageID\")
             """,
             expandedSource: """
             struct ImageID: StronglyTypedID, ResourceID, FileID, MediaID {

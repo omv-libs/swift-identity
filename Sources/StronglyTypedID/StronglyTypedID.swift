@@ -51,7 +51,7 @@ public extension StronglyTypedID where Self: Comparable, RawValue: Comparable {
  if any of the parameters isn't a protocol.
  */
 @freestanding(declaration, names: arbitrary)
-public macro StronglyTypedID<T, each U>(_ name: StaticString, backing: T.Type, adopts: repeat each U) = #externalMacro(
+public macro StronglyTypedID<T, each U>(_ name: StaticString) = #externalMacro(
     module: "StronglyTypedIDMacros",
     type: "StronglyTypedIDMacro"
 )

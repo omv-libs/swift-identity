@@ -27,23 +27,30 @@ extension StronglyTypedIDMacro: DeclarationMacro {
         of node: some FreestandingMacroExpansionSyntax,
         in _: some MacroExpansionContext
     ) throws -> [DeclSyntax] {
-        let arguments = node.arguments
-        guard arguments.count >= 2 else {
+        let parameters = node.arguments
+        guard parameters.count == 1 else {
             // This should only happen due to toolset error or out of sync macro declaration so let's blow up.
-            preconditionFailure("Unexpected argument count \(arguments.count). Toolset shouldn't have made it this far")
+            preconditionFailure("Unexpected argument count \(parameters.count). Toolset shouldn't have made it this far")
         }
 
         // Get the ID type name from the first parameter.
-        let typeName = extractStringArgument(arguments[arguments.startIndex])
+        let typeName = extractStringArgument(parameters[parameters.startIndex])
 
-        // Grab the second parameter (backing type).
-        let backingIndex = arguments.index(after: arguments.startIndex)
-        let backingArgument = arguments[backingIndex].expression
-        let backingTypeName = extractTypeArgument(backingArgument)
+        guard let generics = node.genericArgumentClause else {
+            preconditionFailure("Unexpectedly there are no generic arguments")
+        }
+
+        guard generics.arguments.count >= 1 else {
+            preconditionFailure("Unexpected generic count \(generics.arguments.count). Toolset shouldn't have made it this far")
+        }
+
+        // Grab the first generic (backing type).
+        let backingIndex = generics.arguments.startIndex
+        let backingTypeName = generics.arguments[backingIndex].argument.as(IdentifierTypeSyntax.self)!
 
         // Check if there's adoption arguments and return a simplified declaration if not.
-        let firstAdoptionIndex = arguments.index(after: backingIndex)
-        guard firstAdoptionIndex != arguments.endIndex else {
+        let firstAdoptionIndex = generics.arguments.index(after: backingIndex)
+        guard firstAdoptionIndex != generics.arguments.endIndex else {
             // No adoptions, let's just return and build.
             let result =
                 """
@@ -55,8 +62,8 @@ extension StronglyTypedIDMacro: DeclarationMacro {
         }
 
         // Grab the adoptions identifiers.
-        let adoptions = arguments[firstAdoptionIndex...].map { element in
-            extractTypeArgument(element.expression)
+        let adoptions = generics.arguments[firstAdoptionIndex...].compactMap { element in
+            element.argument.as(IdentifierTypeSyntax.self)?.name.text
         }
 
         // Build up result.
