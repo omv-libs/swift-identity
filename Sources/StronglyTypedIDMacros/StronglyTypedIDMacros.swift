@@ -78,11 +78,11 @@ extension StronglyTypedIDMacro: DeclarationMacro {
             preconditionFailure("Unexpected argument, toolset should only allow `StaticString` literals in")
         }
     }
-    
+
     private static func extractTypeArgument(_ argument: ExprSyntax) -> String {
         let memberAccess = argument.as(MemberAccessExprSyntax.self)
         let declName = argument.as(DeclReferenceExprSyntax.self)
-        
+
         if let memberAccess, memberAccess.declName.baseName.text == "self" {
             if let name = memberAccess.base?.description {
                 return name
