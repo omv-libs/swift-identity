@@ -20,12 +20,8 @@ since macro support is the only dependency forcing the newer toolset and minimum
 The easiest way to adopt is to just use the `#StronglyTypedID` macro. You only need to parameterize it with the type
 name and its backing type.
 
-The macro declares a value type that complies with the `StronglyTypedID` protocol, sets its `RawValue` to be the
-specified backing type and adds the necessary stored `rawValue` stored property.
-
-Optionally, you can declare compliance with other protocols by listing them as the macro's type parameters after the
-backing type. This makes it easier to declare everything at once and also setting hierarchies of ID types if that is a
-desirable set up.
+The macro declares a value type that complies with the `StronglyTypedID` protocol and the necessary elements to
+conform to `RawRepresentable`.
 
 For example if we want to manage our clowns with value model types, as is the current fashion, and identify them using
 `UUID` values, we'd declare the following:
@@ -70,10 +66,15 @@ protocol Clown: Identifiable {
 }
 ```
 
-Of course if we became victims of feature creep and started building a comprehensive circus HR solution we may end up
-wanting to make sure that our clowns are, despite everything they've done, treated the same as any other human being
-working for the circus. As such you'd just need to add common protocols to the ID types as to be able to use them in
-common functionality:
+If you have more sophisticated needs you can use the attached ``@StronglyTypedID`` macro. Parameterize the same way,
+with the backing type. You can usually skip any contents but whatever additional decorations you need to apply to the
+type can be. The attached macro cannot be used in local function scope but otherwise results in the same types that
+the freestanding version does.
+
+As an example, say that we have became victims of feature creep and started building a comprehensive circus HR solution
+we may end up wanting to make sure that our clowns are, despite everything they've done, treated the same as any other
+human being working for the circus. As such you'd just need to add common protocols to the ID types as to be able to use
+them in common functionality:
 
 ```swift
 protocol Performer {
@@ -85,7 +86,7 @@ protocol Performer {
 protocol PerformerID: StronglyTypedID {}
 
 struct Clown: Identifiable, Performer {
-    #StronglyTypedID<UUID, PerformerID>("ID")
+    @StronglyTypedID<UUID> struct ID: PerformerID {}
 
     var id: ID
 
@@ -95,7 +96,7 @@ struct Clown: Identifiable, Performer {
 }
 
 struct Acrobat: Identifiable {
-    #StronglyTypedID<UUID, PerformerID>("ID")
+    @StronglyTypedID<UUID> struct ID: PerformerID {}
 
     var id: ID
 
@@ -112,7 +113,7 @@ protocol Payroll {
 ```
 
 The additional conformances can also be used for common protocols that require no additional work for compliance, like
-`Comparable` if required, or `Sendable`.
+`Comparable` if required.
 
 ## Codability
 

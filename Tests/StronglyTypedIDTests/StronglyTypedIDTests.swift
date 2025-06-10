@@ -4,7 +4,8 @@ import XCTest
 final class StronglyTypedIDTests: XCTestCase {
     // As of Xcode 16.4 this line below causes a warning about `any Comparable` requirement.
     // Other protocols do not cause this issue, this might be a compiler glitch but unclear of which kind.
-    #StronglyTypedID<Int, Comparable>("DummyIDType")
+    @StronglyTypedID<Int>
+    struct DummyIDType: Comparable {}
 
     // Mostly testing that the Swift type system does what we expect.
     func testComparableStronglyTypedID() {
@@ -43,41 +44,39 @@ final class StronglyTypedIDTests: XCTestCase {
 
         XCTAssertNotEqual(john.id, mary.id)
     }
+}
 
-    /// We just throw the docs clown stuff here to make sure it actually builds.
-    func testClowns() {
-        protocol Performer {
-            var hourlyWage: Decimal { get }
+/// We just throw the docs clown stuff here to make sure it actually builds.
+protocol Performer {
+    var hourlyWage: Decimal { get }
 
-            // ...
-        }
+    // ...
+}
 
-        protocol PerformerID: StronglyTypedID {}
+protocol PerformerID: StronglyTypedID {}
 
-        struct Clown: Identifiable, Performer {
-            #StronglyTypedID<UUID, PerformerID>("ID")
+struct Clown: Identifiable, Performer {
+    @StronglyTypedID<UUID> struct ID: PerformerID {}
 
-            var id: ID
+    var id: ID
 
-            let hourlyWage = Decimal(7.25)
+    let hourlyWage = Decimal(7.25)
 
-            // ...
-        }
+    // ...
+}
 
-        struct Acrobat: Identifiable {
-            #StronglyTypedID<UUID, PerformerID>("ID")
+struct Acrobat: Identifiable {
+    @StronglyTypedID<UUID> struct ID: PerformerID {}
 
-            var id: ID
+    var id: ID
 
-            let hourlyWage = Decimal(50.00)
+    let hourlyWage = Decimal(50.00)
 
-            // ...
-        }
+    // ...
+}
 
-        protocol Payroll {
-            func pay(performer: some PerformerID, period: TimeInterval) -> Decimal
+protocol Payroll {
+    func pay(performer: some PerformerID, period: TimeInterval) -> Decimal
 
-            // ...
-        }
-    }
+    // ...
 }

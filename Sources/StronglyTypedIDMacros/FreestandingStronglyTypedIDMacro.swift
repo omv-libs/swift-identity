@@ -1,22 +1,12 @@
 //
-//  StronglyTypedIDMacros.swift
+//  FreestandingStronglyTypedIDMacro.swift
 //
 //
 //  Created by Óscar Morales Vivó on 9/20/23.
 //
 
-import SwiftCompilerPlugin
-import SwiftDiagnostics
 import SwiftSyntax
-import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
-
-@main
-struct StronglyTypedIDMacrosTestPlugin: CompilerPlugin {
-    let providingMacros: [Macro.Type] = [
-        FreestandingStronglyTypedIDMacro.self
-    ]
-}
 
 public struct FreestandingStronglyTypedIDMacro {}
 
@@ -44,32 +34,14 @@ extension FreestandingStronglyTypedIDMacro: DeclarationMacro {
             preconditionFailure("Unexpected generic count \(generics.arguments.count). Toolset shouldn't have made it this far")
         }
 
-        // Grab the first generic (backing type).
+        // Grab the backing type.
         let backingIndex = generics.arguments.startIndex
         let backingTypeName = generics.arguments[backingIndex].argument.as(IdentifierTypeSyntax.self)!
 
-        // Check if there's adoption arguments and return a simplified declaration if not.
-        let firstAdoptionIndex = generics.arguments.index(after: backingIndex)
-        guard firstAdoptionIndex != generics.arguments.endIndex else {
-            // No adoptions, let's just return and build.
-            let result =
-                """
-                struct \(typeName): StronglyTypedID {
-                    var rawValue: \(backingTypeName)
-                }
-                """
-            return ["\(raw: result)"]
-        }
-
-        // Grab the adoptions identifiers.
-        let adoptions = generics.arguments[firstAdoptionIndex...].compactMap { element in
-            element.argument.as(IdentifierTypeSyntax.self)?.name.text
-        }
-
-        // Build up result.
+        // No adoptions, let's just return and build.
         let result =
             """
-            struct \(typeName): StronglyTypedID, \(adoptions.joined(separator: ", ")) {
+            struct \(typeName): StronglyTypedID {
                 var rawValue: \(backingTypeName)
             }
             """
