@@ -201,10 +201,6 @@ application's code —you can still use `init(rawValue:)` to bring them into bei
 
 ## Known Issues
 
-* Due to the vagaries of macro expansion, declaring `#StronglyTypedID` in the body of a function and then attempting to
-use the generated type will not work. This is not an expected use case except possibly in unit tests, and there's easy
-enough workarounds in that case. 
-* For additional conformances, the compiler will complain that the types should be listed as `any MyProtocol` and that
-it will become an error in a future language mode. Interestingly enough it doesn not complain for certain protocol types
-like `Sendable`. Ignore the warnings or add the conformances in an `extension` if treat warnings as errors is on. We
-will keep an eye on future language evolution in case more changes are needed.
+* Due to the vagaries of macro expansion, using either `#StronglyTypedID` or `@StronglyTypedID` in the body of a
+function and then attempting to use the generated code will not work. This is not an expected use case except possibly
+in unit tests, and there's easy enough workaround in that case (declare the types outside the test function). 
