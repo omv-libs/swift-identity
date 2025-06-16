@@ -44,12 +44,9 @@ public extension StronglyTypedID where Self: Comparable, RawValue: Comparable {
  A macro that declares a strongly typed ID.
 
  Use this macro when you just need an ID that has no further sophistication beyond what this package offers.
- - Parameters
+ - Parameters:
+   - Backing: The type that backs the ID type, its `rawValue`. Must conform to `Hashable & Codable & Sendable`.
    - name: The name of the new ID type. Must be a valid type identifier at compile time.
-   - backing: The type that backs the ID type, its `rawValue`
-   - adopts: Optionally, a comma separated list of protocols that the ID type also adopts. Currently Swift doesn't allow
- for a declaration that would check that the parameters sent are as described, but the expanded macro will fail to build
- if any of the parameters isn't a protocol.
  */
 @freestanding(declaration, names: arbitrary)
 public macro StronglyTypedID<Backing: Hashable & Codable & Sendable>(_ name: StaticString) = #externalMacro(
