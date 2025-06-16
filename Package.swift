@@ -5,7 +5,7 @@ import CompilerPluginSupport
 import PackageDescription
 
 let package = Package(
-    name: "StronglyTypedID",
+    name: "swift-identity",
     platforms: [
         .macOS(.v10_15),
         .iOS(.v13),
@@ -16,8 +16,8 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "StronglyTypedID",
-            targets: ["StronglyTypedID"]
+            name: "Identity",
+            targets: ["Identity"]
         )
     ],
     dependencies: [
@@ -26,21 +26,21 @@ let package = Package(
     ],
     targets: [
         .macro(
-            name: "StronglyTypedIDMacros",
+            name: "IdentityMacros",
             dependencies: [
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax")
             ]
         ),
         .target(
-            name: "StronglyTypedID",
-            dependencies: ["StronglyTypedIDMacros"]
+            name: "Identity",
+            dependencies: ["IdentityMacros"]
         ),
         .testTarget(
-            name: "StronglyTypedIDTests",
+            name: "IdentityTests",
             dependencies: [
-                "StronglyTypedID",
-                "StronglyTypedIDMacros",
+                "Identity",
+                "IdentityMacros",
                 .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax")
             ]
         )

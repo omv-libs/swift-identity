@@ -1,14 +1,12 @@
-import StronglyTypedID
+import Identity
 import XCTest
 
-final class StronglyTypedIDTests: XCTestCase {
-    // As of Xcode 16.4 this line below causes a warning about `any Comparable` requirement.
-    // Other protocols do not cause this issue, this might be a compiler glitch but unclear of which kind.
-    @StronglyTypedID<Int>
+final class IdentifierTests: XCTestCase {
+    @Identifier<Int>
     struct DummyIDType: Comparable {}
 
     // Mostly testing that the Swift type system does what we expect.
-    func testComparableStronglyTypedID() {
+    func testComparableIdentifier() {
         let dummyID1 = DummyIDType(rawValue: 7)
         let dummyID2 = DummyIDType(rawValue: 77)
 
@@ -22,9 +20,9 @@ final class StronglyTypedIDTests: XCTestCase {
     }
 
     // Testing using a non-trivial value type as an ID type.
-    func testComplexStronglyTypedID() {
+    func testComplexIdentifier() {
         struct Person {
-            #StronglyTypedID<PersonName>("ID")
+            #Identifier<PersonName>("ID")
 
             var id: ID {
                 .init(rawValue: .init(firstName: firstName, lastName: lastName))
@@ -53,10 +51,10 @@ protocol Performer {
     // ...
 }
 
-protocol PerformerID: StronglyTypedID {}
+protocol PerformerID: Identifier {}
 
 struct Clown: Identifiable, Performer {
-    @StronglyTypedID<UUID> struct ID: PerformerID {}
+    @Identifier<UUID> struct ID: PerformerID {}
 
     var id: ID
 
@@ -66,7 +64,7 @@ struct Clown: Identifiable, Performer {
 }
 
 struct Acrobat: Identifiable {
-    @StronglyTypedID<UUID> struct ID: PerformerID {}
+    @Identifier<UUID> struct ID: PerformerID {}
 
     var id: ID
 

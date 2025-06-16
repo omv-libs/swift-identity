@@ -1,4 +1,4 @@
-# StronglyTypedID
+# Identifier
 [![Swift Package Manager compatible](https://img.shields.io/badge/SPM-compatible-4BC51D.svg?style=flat)](https://github.com/apple/swift-package-manager)
 
 "Put an ID on it" and "use more functional programming" are the go-to solutions to any programming question these days.
@@ -17,10 +17,10 @@ since macro support is the only dependency forcing the newer toolset and minimum
 
 ## Adoption
 
-The easiest way to adopt is to just use the `#StronglyTypedID` macro. You only need to parameterize it with the type
+The easiest way to adopt is to just use the `#Identifier` macro. You only need to parameterize it with the type
 name and its backing type.
 
-The macro declares a value type that complies with the `StronglyTypedID` protocol and the necessary elements to
+The macro declares a value type that complies with the `Identifier` protocol and the necessary elements to
 conform to `RawRepresentable`.
 
 For example if we want to manage our clowns with value model types, as is the current fashion, and identify them using
@@ -28,7 +28,7 @@ For example if we want to manage our clowns with value model types, as is the cu
  
 ```swift
 struct Clown: Identifiable {
-    #StronglyTypedID<UUID>("ID")
+    #Identifier<UUID>("ID")
     
     var id: ID
     
@@ -49,7 +49,7 @@ outside since Swift protocols cannot be nested inside other protocols. So if we 
 clowns we'd end up with the following:
 
 ```swift
-#StronglyTypedID<UUID>("ClownID")
+#Identifier<UUID>("ClownID")
 
 protocol Clown: Identifiable {
     var id: ClownID { get }
@@ -66,7 +66,7 @@ protocol Clown: Identifiable {
 }
 ```
 
-If you have more sophisticated needs you can use the attached ``@StronglyTypedID`` macro. Parameterize the same way,
+If you have more sophisticated needs you can use the attached ``@Identifier`` macro. Parameterize the same way,
 with the backing type. You can usually skip any contents but whatever additional decorations you need to apply to the
 type can be. The attached macro cannot be used in local function scope but otherwise results in the same types that
 the freestanding version does.
@@ -83,10 +83,10 @@ protocol Performer {
     // ...
 }
 
-protocol PerformerID: StronglyTypedID {}
+protocol PerformerID: Identifier {}
 
 struct Clown: Identifiable, Performer {
-    @StronglyTypedID<UUID> struct ID: PerformerID {}
+    @Identifier<UUID> struct ID: PerformerID {}
 
     var id: ID
 
@@ -96,7 +96,7 @@ struct Clown: Identifiable, Performer {
 }
 
 struct Acrobat: Identifiable {
-    @StronglyTypedID<UUID> struct ID: PerformerID {}
+    @Identifier<UUID> struct ID: PerformerID {}
 
     var id: ID
 
@@ -117,7 +117,7 @@ The additional conformances can also be used for common protocols that require n
 
 ## Codability
 
-`StronglyTypedID` includes a default implementation of `Codable` that avoids key-value coding for the contents. This is
+`Identifier` includes a default implementation of `Codable` that avoids key-value coding for the contents. This is
 awfully convenient when dealing with outside data like your typical JSON backend reply, which generally just has a
 string field for the id of whatever data you're getting.
 
@@ -201,6 +201,6 @@ application's code —you can still use `init(rawValue:)` to bring them into bei
 
 ## Known Issues
 
-* Due to the vagaries of macro expansion, using either `#StronglyTypedID` or `@StronglyTypedID` in the body of a
+* Due to the vagaries of macro expansion, using either `#Identifier` or `@Identifier` in the body of a
 function and then attempting to use the generated code will not work. This is not an expected use case except possibly
 in unit tests, and there's easy enough workaround in that case (declare the types outside the test function). 

@@ -1,5 +1,5 @@
 //
-//  FreestandingStronglyTypedIDMacro.swift
+//  FreestandingIdentifierMacro.swift
 //
 //
 //  Created by Óscar Morales Vivó on 9/20/23.
@@ -8,11 +8,11 @@
 import SwiftSyntax
 import SwiftSyntaxMacros
 
-public struct FreestandingStronglyTypedIDMacro {}
+public struct FreestandingIdentifierMacro {}
 
-// MARK: - DeclarationMacro Adoption
+// MARK: - DeclarationMacro Conformance
 
-extension FreestandingStronglyTypedIDMacro: DeclarationMacro {
+extension FreestandingIdentifierMacro: DeclarationMacro {
     public static func expansion(
         of node: some FreestandingMacroExpansionSyntax,
         in _: some MacroExpansionContext
@@ -41,7 +41,7 @@ extension FreestandingStronglyTypedIDMacro: DeclarationMacro {
         // No adoptions, let's just return and build.
         let result =
             """
-            struct \(typeName): StronglyTypedID {
+            struct \(typeName): Identifier {
                 var rawValue: \(backingTypeName)
             }
             """
