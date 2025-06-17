@@ -1,20 +1,20 @@
 //
-//  StronglyTypedID+CodableTests.swift
+//  Identifier+CodableTests.swift
 //
 //
 //  Created by Óscar Morales Vivó on 3/21/23.
 //
 
-import StronglyTypedID
+import Identity
 import XCTest
 
 // swiftlint:disable nesting
-final class StronglyTypedID_CodableTests: XCTestCase {
+final class Identifier_CodableTests: XCTestCase {
     // Tests that `String`-based Strongly typed IDs will encode/decode as just a plain string. Very useful for backend
     // ID decoding...
     func testStringIDCodable() throws {
         struct DataStruct: Identifiable, Codable {
-            struct ID: StronglyTypedID {
+            struct ID: Identifier {
                 var rawValue: String
             }
 
@@ -52,7 +52,7 @@ final class StronglyTypedID_CodableTests: XCTestCase {
     // decoding...
     func testURLIDCodable() throws {
         struct DataStruct: Identifiable, Codable {
-            struct ID: StronglyTypedID {
+            struct ID: Identifier {
                 var rawValue: URL
             }
 
@@ -94,7 +94,7 @@ final class StronglyTypedID_CodableTests: XCTestCase {
     // decoding...
     func testUUIDCodable() throws {
         struct DataStruct: Identifiable, Codable {
-            struct ID: StronglyTypedID {
+            struct ID: Identifier {
                 var rawValue: UUID
             }
 
@@ -137,7 +137,7 @@ final class StronglyTypedID_CodableTests: XCTestCase {
     // decoding...
     func testIntegerIDCodable() throws {
         struct DataStruct: Identifiable, Codable {
-            struct ID: StronglyTypedID {
+            struct ID: Identifier {
                 var rawValue: UInt64
             }
 
@@ -180,7 +180,7 @@ final class StronglyTypedID_CodableTests: XCTestCase {
     // decoding...
     func testFloatIDCodable() throws {
         struct DataStruct: Identifiable, Codable {
-            struct ID: StronglyTypedID {
+            struct ID: Identifier {
                 var rawValue: Double
             }
 

@@ -1,14 +1,14 @@
 //
-//  StronglyTypedID+TestingTests.swift
+//  Identifier+TestingTests.swift
 //
 //
 //  Created by Óscar Morales Vivó on 3/21/23.
 //
 
-import StronglyTypedID
+import Identity
 import XCTest
 
-final class StronglyTypedID_TestingTests: XCTestCase {
+final class Identifier_TestingTests: XCTestCase {
     // Not really testing much of anything but verifying that the type system wrangling produces the desired result.
     // If the extension of `TestStringIDType` adopting `ExpressibleByStringLiteral` is removed the test won't compile.
     func testExpressibleByStringLiteralID() {
@@ -24,7 +24,7 @@ final class StronglyTypedID_TestingTests: XCTestCase {
     }
 }
 
-struct TestStringIDType: StronglyTypedID, Comparable {
+struct TestStringIDType: Identifier, Comparable {
     var rawValue: String
 }
 

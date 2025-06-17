@@ -1,6 +1,6 @@
 //
-//  AttachedStronglyTypedIDMacro.swift
-//  StronglyTypedID
+//  AttachedIdentifierMacro.swift
+//  Identifier
 //
 //  Created by Óscar Morales Vivó on 6/8/25.
 //
@@ -8,11 +8,11 @@
 import SwiftSyntax
 import SwiftSyntaxMacros
 
-public struct AttachedStronglyTypedIDMacro {}
+public struct AttachedIdentifierMacro {}
 
-// MARK: - DeclarationMacro Adoption
+// MARK: - MemberMacro Conformance
 
-extension AttachedStronglyTypedIDMacro: MemberMacro {
+extension AttachedIdentifierMacro: MemberMacro {
     public static func expansion(
         of _: AttributeSyntax,
         providingMembersOf declaration: some DeclGroupSyntax,
@@ -28,6 +28,7 @@ extension AttachedStronglyTypedIDMacro: MemberMacro {
             preconditionFailure("Unable to find macro declaration, somehow.")
         }
 
+        // If the type is `public` we want the generated declarations to also be `public`.
         let access = declaration.modifiers.first(where: \.isNeededAccessLevelModifier)
 
         return [
@@ -38,7 +39,9 @@ extension AttachedStronglyTypedIDMacro: MemberMacro {
     }
 }
 
-extension AttachedStronglyTypedIDMacro: ExtensionMacro {
+// MARK: - ExtensionMacro Conformance
+
+extension AttachedIdentifierMacro: ExtensionMacro {
     public static func expansion(
         of _: AttributeSyntax,
         attachedTo _: some DeclGroupSyntax,
@@ -47,7 +50,7 @@ extension AttachedStronglyTypedIDMacro: ExtensionMacro {
         in _: some MacroExpansionContext
     ) throws -> [ExtensionDeclSyntax] {
         // This is all simple enough.
-        let stronglyTypedIDConformance = try ExtensionDeclSyntax("extension \(type.trimmed): StronglyTypedID {}")
+        let stronglyTypedIDConformance = try ExtensionDeclSyntax("extension \(type.trimmed): Identifier {}")
 
         return [stronglyTypedIDConformance]
     }
