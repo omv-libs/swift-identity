@@ -1,4 +1,4 @@
-# Identifier
+# swift-identity
 [![Swift Package Manager compatible](https://img.shields.io/badge/SPM-compatible-4BC51D.svg?style=flat)](https://github.com/apple/swift-package-manager)
 
 "Put an ID on it" and "use more functional programming" are the go-to solutions to any programming question these days.
@@ -11,21 +11,39 @@ folks may just throw a string wherever but it's not like their programming langu
 
 ## Support
 
-This should work fine everywhere that Swift 5.9 can be used. It's currently configured to work on any platform supported
-by Xcode 15. If you need support for earlier versions of any Apple platforms you can use version 1.0.0 of the package,
+This package vends a number of macros and is asking for Swift 6.1 but can otherwise work on any platform supported by
+Xcode 16. Earlier versions of the package can be used with earlier tooling and their earlier supported OS versions,
 since macro support is the only dependency forcing the newer toolset and minimum OS version deployment.
 
 ## Adoption
 
-The easiest way to adopt is to just use the `#Identifier` macro. You only need to parameterize it with the type
-name and its backing type.
+The easiest way to adopt is to just use one of the `Identifier` macros. You only need to parameterize it with its
+backing type.
 
-The macro declares a value type that complies with the `Identifier` protocol and the necessary elements to
-conform to `RawRepresentable`.
+For global scope identifiers you'll need to declare the type by hand since macros are not allowed to do so. You can
+however use the attached `@Identifier` macro to take care of the busywork. For example if we want to keep track of our
+clowns with a dedicated `UUID` backed ID we would just need to write the following:
 
-For example if we want to manage our clowns with value model types, as is the current fashion, and identify them using
-`UUID` values, we'd declare the following:
- 
+```swift
+@Identifier<UUID> struct ClownID {}
+```
+
+Of course we could also add anything else to that type declaration as needed, say for example if we want to add some
+functionality to the ID itself:
+
+```swift
+@Identifier<UUID> struct ClownID: Honkable, Slappable {
+    func honk() {
+        AudioOutput.shared.play(sound: .honk, volume: 11)
+    }
+    
+    // ...
+}
+```
+
+If we have, say, a `Clown` model type and we'd rather embed the identifier type within, we can use the `#Identifier`
+macro instead as follows:
+
 ```swift
 struct Clown: Identifiable {
     #Identifier<UUID>("ID")
@@ -44,12 +62,14 @@ struct Clown: Identifiable {
 } 
 ```
 
-Nothing stops us from declaring similarly for reference types, although for `protocol` types we'd need to declare them
-outside since Swift protocols cannot be nested inside other protocols. So if we ended up with an abstract façade for our
-clowns we'd end up with the following:
+After which we would refer to the type from elsewhere as `Clown.ID`
+ 
+Beyond that the macros are usable anywhere where the expanded code would make sense and be allowed by the compiler. For
+example you cannot declare a type within a protocol, which means a theoretical `protocol Clown: Identifiable` would need
+its `ID` type declared outside its protocol declaration scope.
 
 ```swift
-#Identifier<UUID>("ClownID")
+@Identifier<UUID> struct ClownID {}
 
 protocol Clown: Identifiable {
     var id: ClownID { get }
@@ -66,14 +86,10 @@ protocol Clown: Identifiable {
 }
 ```
 
-If you have more sophisticated needs you can use the attached ``@Identifier`` macro. Parameterize the same way,
-with the backing type. You can usually skip any contents but whatever additional decorations you need to apply to the
-type can be. The attached macro cannot be used in local function scope but otherwise results in the same types that
-the freestanding version does.
-
-As an example, say that we have became victims of feature creep and started building a comprehensive circus HR solution
-we may end up wanting to make sure that our clowns are, despite everything they've done, treated the same as any other
-human being working for the circus. As such you'd just need to add common protocols to the ID types as to be able to use
+The attached macro also allows for more sophisticated use cases i.e. ID type hierarchies. For example, say that we have
+become victims of feature creep and started building a comprehensive circus HR solution. We may end up wanting to make
+sure that our clowns are, despite everything they've done, treated the same as any other human being working for the
+circus. As such you could add common parent protocols to the ID types as to be able to use
 them in common functionality:
 
 ```swift
@@ -112,9 +128,6 @@ protocol Payroll {
 }
 ```
 
-The additional conformances can also be used for common protocols that require no additional work for compliance, like
-`Comparable` if required.
-
 ## Codability
 
 `Identifier` includes a default implementation of `Codable` that avoids key-value coding for the contents. This is
@@ -127,13 +140,13 @@ the following available clowns:
 ```json
 [
   {
-    "id": "CD6AB6A4-3FE8-4B47-913B-B5F5D65DD6B2",
+    "id": "cd6ab6a4-3fe8-4b47-913b-b5f5d65dd6b2",
     "name": "Pagliacci",
     "noseColor": "0xff0000",
     "shoeSize": 18
   },
   {
-    "id": "1DAFCD43-C8C8-40D9-B519-749B15B3A94F",
+    "id": "1dafcd43-c8c8-40d9-b519-749b15b3a94f",
     "name": "Bozo",
     "noseColor": "0xffff00",
     "shoeSize": 10
@@ -143,13 +156,15 @@ the following available clowns:
 
 What do you need to do to decode those plain strings into our UUID IDs here? _absolutely nothing_. Well you might need
 to be sure that the backend folks are always sending you v4 UUIDs in there since that's what the Foundation `UUID` type
-supports. You'll probably also need to do something about those hex colors but that's just because this is a terrible
-example.
+supports. You'll probably also need to do something about those hex colors but that's just because this is a terribly
+contrived example.
 
 Then again, what would you need to do to _encode_ your UUID-based strongly typed IDs into something that the backend can
 chew on? _absolutely nothing_. Usually, that is. As a gesture of friendship to long-suffering backend developers a
 `UUID`-backed strongly typed ID will encode in lowercase, since that's almost always what the backend expects. Other
-than that they'll just encode themselves into the string form of the UUID and off you go.
+than that they'll just encode themselves into the string form of the UUID and off you go. If additional work is required
+to translate into peculiar backend expectations, you can always add a custom `Encodable` implementation to your
+identifier type.
 
 ## Testability
 
@@ -157,15 +172,15 @@ When writing tests, you are unlikely to care that your unique IDs are that uniqu
 them and may want to make sure they are easy to track through a test's execution and validation.
 
 This applies mostly to types where there's no intrinsic validation to the ID raw value itself (in other words UUIDs
-and other forms of global unique ID with specified formatting still need to be handled with care).
+and other forms of global unique ID with specified formatting may still need to be handled with care).
 
 For those types of IDs, allowing for using string constants to build IDs makes setting up test data much simpler. Let's
-assume that our `Clown` is using a `String`-based strongly typed ID and we are writing some unit tests for our
+assume that our `Clown` is using a `String`-backed `Identifer` type and we are writing some unit tests for our
 `ClownCar`
 
 ```swift
-final class ClownCarTests: XCTestCase {
-    func testSeventeenClowns() throws {
+struct ClownCarTests {
+    @Test("Light loading test") func seventeenClowns() throws {
         let seventeen = 17
         let clownCar = ClownCar()
         for index in 1 ... seventeen {
@@ -177,11 +192,13 @@ final class ClownCarTests: XCTestCase {
         }
 
         // Test that the clowns survive.
-        XCTAssertNoThrow(try clownCar.jumpOverPiranhaPool())
+        #expect(throws: Never.self) {
+            try clownCar.jumpOverPiranhaPool()
+        }
         
         // Test that the clowns have been shaken but not stirred:
         for index in 1 ... seventeen {
-            XCTAssertEqual(clownCar.clowns[index].id, "Clown-id-\(index)")
+            #expect(clownCar.clowns[index].id == "Clown-id-\(index)")
         }
     }
 }
@@ -194,13 +211,13 @@ able to automate computerized cruelty to clowns:
 extension Clown.ID: ExpressibleByStringInterpolation {}
 ```
 
-The main reason we don't include this into `String`-based IDs by default is that we don't know which ones would support
-it (just because a strongly typed ID is `String`-based doesn't mean it'll support any random `String` as a raw value)
-and because generally you wouldn't want initialization by string constant to happen by accident in the real
-application's code —you can still use `init(rawValue:)` to bring them into being if needed—.
+`Identifier` does not automatically conform to these protocols to allow the developer to choose whether static constants
+of the backing type will be allowed to be assigned into them or an explicit call will be needed. Particularly important
+when not every value of the backing type makes for a valid identifier type value.
 
 ## Known Issues
 
-* Due to the vagaries of macro expansion, using either `#Identifier` or `@Identifier` in the body of a
-function and then attempting to use the generated code will not work. This is not an expected use case except possibly
-in unit tests, and there's easy enough workaround in that case (declare the types outside the test function). 
+* Cannot use `#Identifier` on global scope since Swift does not allow macros to declare new types on global scope.
+* Generating new `Identifier` types using either macro within a function body will not work for similar reasons. This is
+not an expected use case except possibly in unit tests, and there's easy enough workaround in that case (declare the
+types outside the test function).
