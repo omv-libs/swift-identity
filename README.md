@@ -159,12 +159,12 @@ to be sure that the backend folks are always sending you v4 UUIDs in there since
 supports. You'll probably also need to do something about those hex colors but that's just because this is a terribly
 contrived example.
 
-Then again, what would you need to do to _encode_ your UUID-based strongly typed IDs into something that the backend can
-chew on? _absolutely nothing_. Usually, that is. As a gesture of friendship to long-suffering backend developers a
-`UUID`-backed strongly typed ID will encode in lowercase, since that's almost always what the backend expects. Other
-than that they'll just encode themselves into the string form of the UUID and off you go. If additional work is required
-to translate into peculiar backend expectations, you can always add a custom `Encodable` implementation to your
-identifier type.
+Then again, what would you need to do to _encode_ your UUID-based identifier into something that the backend can chew
+on? _absolutely nothing_. Usually, that is. As a gesture of friendship to long-suffering backend developers a
+`UUID`-backed identifier will encode in lowercase, since that's almost always what the backend expects. Other than that
+they'll just encode themselves into the string form of the UUID and off you go. If additional work is required to
+translate into peculiar backend expectations, you can always add a custom `Encodable` implementation to your identifier
+type.
 
 ## Testability
 

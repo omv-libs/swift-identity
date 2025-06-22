@@ -1,18 +1,18 @@
 //
-//  AttachedIdentifierMacro.swift
-//  Identifier
+//  AttachedIdentifiableMacro.swift
+//  swift-identity
 //
-//  Created by Óscar Morales Vivó on 6/8/25.
+//  Created by Óscar Morales Vivó on 6/21/25.
 //
 
 import SwiftSyntax
 import SwiftSyntaxMacros
 
-public struct AttachedIdentifierMacro {}
+public struct AttachedIdentifiableMacro {}
 
 // MARK: - MemberMacro Conformance
 
-extension AttachedIdentifierMacro: MemberMacro {
+extension AttachedIdentifiableMacro: MemberMacro {
     public static func expansion(
         of _: AttributeSyntax,
         providingMembersOf declaration: some DeclGroupSyntax,
@@ -32,16 +32,21 @@ extension AttachedIdentifierMacro: MemberMacro {
         let access = declaration.modifiers.first(where: \.isNeededAccessLevelModifier)
 
         return [
-            "\(access)init(rawValue: \(genericParam)) { self.rawValue = rawValue }",
-            "\(access)typealias RawValue = \(genericParam)",
-            "\(access)var rawValue: \(genericParam)"
+            """
+            \(access)struct ID: Identifier {
+                init(rawValue: \(genericParam)) { self.rawValue = rawValue }
+
+                var rawValue: \(genericParam)
+            }
+            """,
+            "\(access)var id: ID"
         ]
     }
 }
 
 // MARK: - ExtensionMacro Conformance
 
-extension AttachedIdentifierMacro: ExtensionMacro {
+extension AttachedIdentifiableMacro: ExtensionMacro {
     public static func expansion(
         of _: AttributeSyntax,
         attachedTo _: some DeclGroupSyntax,
@@ -50,8 +55,8 @@ extension AttachedIdentifierMacro: ExtensionMacro {
         in _: some MacroExpansionContext
     ) throws -> [ExtensionDeclSyntax] {
         // This is all simple enough.
-        let identifierConformance = try ExtensionDeclSyntax("extension \(type.trimmed): Identifier {}")
+        let identifiableConformance = try ExtensionDeclSyntax("extension \(type.trimmed): Identifiable {}")
 
-        return [identifierConformance]
+        return [identifiableConformance]
     }
 }

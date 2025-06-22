@@ -25,25 +25,9 @@ public protocol Identifier: RawRepresentable, Codable, CustomStringConvertible, 
 public extension Identifier {
     /// Default `CustomStringConvertible` conformance.
     ///
-    /// Strongly typed IDs use only their raw values for their conversion to strings. This makes them easy to use as
-    /// values passed to logging and reporting methods.
+    /// Identifier conforming types use only their raw values for their conversion to strings. This makes them easy to
+    /// use as values passed to logging and reporting methods.
     var description: String {
         String(describing: rawValue)
-    }
-}
-
-// MARK: - Default `Comparable` Conformance
-
-public extension Identifier where Self: Comparable, RawValue: Comparable {
-    /// Default `Equatable` conformance.
-    ///
-    /// Most of the time IDs should not be treated as comparable as they specify uniqueness, not sort order. But if
-    /// convenient or required this default implementation will take care of the matter. You still need to declare it
-    /// on your specific ID type as `MyIDType: Comparable`.
-    ///
-    /// Swift warnings may happen if you do that outside of the module where you declare a given identifier type, i.e.
-    /// its associated testing target. They should be safe to ignore as long as you control the type.
-    static func < (lhs: Self, rhs: Self) -> Bool {
-        lhs.rawValue < rhs.rawValue
     }
 }

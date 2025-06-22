@@ -8,12 +8,12 @@
 import Foundation
 
 public extension Identifier where RawValue == UUID {
-    /// Simple factory method for `UUID`-based strongly typed IDs.
+    /// Simple factory method for `UUID`-based identifiers.
     ///
     /// For UUID-based ``Identifier`` types we either copy them around or generate unique ones on demand. This method
     /// takes care of the latter without having to actually deal with `UUID` itself. The explicit generation is also
     /// more readable.
-    /// - Returns: A new unique value of the `UUID`-based strongly typed ID.
+    /// - Returns: A new unique value of the `UUID`-based identifier.
     static func unique() -> Self {
         .init(rawValue: UUID())!
     }
