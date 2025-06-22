@@ -11,8 +11,8 @@ import XCTest
 
 // swiftlint:disable nesting
 struct Identifier_CodableTests {
-    // Tests that `String`-based Strongly typed IDs will encode/decode as just a plain string. Very useful for backend
-    // ID decoding...
+    // Tests that `String`-based identifier will encode/decode as just a plain string. Very useful for backend ID
+    // decoding...
     @Test func stringIDEncodesDecodesAsString() throws {
         struct DataStruct: Identifiable, Codable {
             struct ID: Identifier {
@@ -49,7 +49,7 @@ struct Identifier_CodableTests {
         #expect(dataStruct.dataInteger == decodedData.dataInteger)
     }
 
-    // Tests that `URL`-based Strongly typed IDs will encode/decode as just a plain string. Very useful for backend ID
+    // Tests that `URL`-based identifier will encode/decode as just a plain string. Very useful for backend ID
     // decoding...
     @Test func urlIDCodableEncodesAndDecodesAsPlainString() throws {
         struct DataStruct: Identifiable, Codable {
@@ -91,7 +91,7 @@ struct Identifier_CodableTests {
         #expect(dataStruct.dataInteger == decodedData.dataInteger)
     }
 
-    // Tests that `UUID`-based Strongly typed IDs will encode/decode as just a plain string. Very useful for backend ID
+    // Tests that `UUID`-based identifeir will encode/decode as just a plain string. Very useful for backend ID
     // decoding...
     @Test func uuidCodableEncodesDecodesAsLowercaseString() throws {
         struct DataStruct: Identifiable, Codable {
@@ -135,7 +135,7 @@ struct Identifier_CodableTests {
         #expect(dataStruct.dataInteger == decodedData.dataInteger)
     }
 
-    // Tests that `Int`-based Strongly typed IDs will encode/decode as just a plain integer. Very useful for backend ID
+    // Tests that `Int`-based identifier will encode/decode as just a plain integer. Very useful for backend ID
     // decoding...
     @Test func integerIDCodableEncodesDecodesAsInteger() throws {
         struct DataStruct: Identifiable, Codable {
@@ -178,7 +178,7 @@ struct Identifier_CodableTests {
         #expect(dataStruct.dataInteger == decodedData.dataInteger)
     }
 
-    // Tests that `Float`-based Strongly typed IDs will encode/decode as just a plain floating point value. Very useful
+    // Tests that `Float`-based identifier will encode/decode as just a plain floating point value. Very useful
     // for backend ID decoding...
     @Test func floatIDCodableEncodesDecodesAsFloat() throws {
         struct DataStruct: Identifiable, Codable {

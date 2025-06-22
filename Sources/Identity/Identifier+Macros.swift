@@ -33,3 +33,17 @@ public macro Identifier<Backing: Hashable & Codable & Sendable>() = #externalMac
     module: "IdentityMacros",
     type: "AttachedIdentifierMacro"
 )
+
+/// A macro that adds conformance to `Identifiable` with a new `Identifier` type to its attachee.
+///
+/// The macro will declare an `ID` type conforming to ``Identifier`` and backed by the type used to call the macro, as
+/// well as the corresponding `id` property.
+///
+/// This simplifies the typical case of an embedded ID type for a model type.
+/// - Parameter Backing: The type that backs the ``Identifier`` type, its `RawValue`.
+@attached(member, names: named(ID), named(id))
+@attached(extension, conformances: Identifiable)
+public macro Identifiable<Backing: Hashable & Codable & Sendable>() = #externalMacro(
+    module: "IdentityMacros",
+    type: "AttachedIdentifiableMacro"
+)

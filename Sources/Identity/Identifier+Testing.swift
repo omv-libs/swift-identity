@@ -46,7 +46,7 @@ public extension Identifier where Self: ExpressibleByIntegerLiteral, RawValue: E
 }
 
 /**
- We want to avoid accidental conversion from literals to strongly typed IDs, but this default implementation allows us
+ We want to avoid accidental conversion from literals to ``Identifier`` types, but this default implementation allows us
  to declare `ExpressibleByFloatLiteral` conformance and have it automagically implemented. Useful for testing purposes
  where you may want to create dummy IDs with a known value.
 

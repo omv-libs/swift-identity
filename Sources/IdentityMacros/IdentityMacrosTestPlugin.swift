@@ -6,12 +6,23 @@
 //
 
 import SwiftCompilerPlugin
+import SwiftSyntax
 import SwiftSyntaxMacros
 
 @main
 struct IdentityMacrosTestPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
-        FreestandingIdentifierMacro.self,
-        AttachedIdentifierMacro.self
+        AttachedIdentifiableMacro.self,
+        AttachedIdentifierMacro.self,
+        FreestandingIdentifierMacro.self
     ]
+}
+
+extension DeclModifierSyntax {
+    var isNeededAccessLevelModifier: Bool {
+        switch name.tokenKind {
+        case .keyword(.public): true
+        default: false
+        }
+    }
 }
