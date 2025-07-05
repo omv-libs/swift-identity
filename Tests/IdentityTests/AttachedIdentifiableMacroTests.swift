@@ -1,6 +1,6 @@
 //
 //  AttachedIdentifiableMacroTests.swift
-//
+//  swift-identity
 //
 //  Created by Óscar Morales Vivó on 9/21/23.
 //
