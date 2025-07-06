@@ -16,7 +16,7 @@ public extension Dictionary {
     ///   - identifiables: A sequence of identifiable values to use for the new dictionary. Every `.id` in identifiables
     ///   must be unique.
     init<S>(
-        uniqueIDsWithValues identifiables: S
+        uniqueIdentifiableIDsWithValues identifiables: S
     ) where S: Sequence, S.Element: Identifiable, S.Element.ID == Key, S.Element == Value {
         self.init(uniqueKeysWithValues: identifiables.map { ($0.id, $0) })
     }
@@ -48,7 +48,7 @@ public extension Dictionary {
     /// - Parameters identifiables: A sequence of identifiables to group into a dictionary.
     init<S>(
         groupingByID identifiables: S
-    ) where Value == [S.Element], S : Sequence, S.Element: Identifiable, S.Element.ID == Key {
+    ) where Value == [S.Element], S: Sequence, S.Element: Identifiable, S.Element.ID == Key {
         self.init(grouping: identifiables, by: \.id)
     }
 }

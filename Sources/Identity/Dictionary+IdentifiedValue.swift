@@ -1,5 +1,5 @@
 //
-//  Dictionary+Identified.swift
+//  Dictionary+IdentifiedValue.swift
 //  swift-identity
 //
 //  Created by Óscar Morales Vivó on 6/28/25.
@@ -16,8 +16,8 @@ public extension Dictionary {
     ///   - identifiedValues: A sequence of ``Identified`` values to use for the new dictionary. Every `.id` in
     ///   identifiedValues must be unique.
     init<S>(
-        uniqueIDsWithValues identifiedValues: S
-    ) where S: Sequence, S.Element == Identified<Key, Value> {
+        uniqueIdentifiedIDsWithValues identifiedValues: S
+    ) where S: Sequence, S.Element: IdentifiedValue<Key, Value> {
         self.init(uniqueKeysWithValues: identifiedValues.map { ($0.id, $0.value) })
     }
 
@@ -35,22 +35,22 @@ public extension Dictionary {
     ///   returns the desired value for the final dictionary.
     init<S>(
         _ identifiedValues: S,
-        uniquingIDsWith combine: (Value, Value) throws -> Value
-    ) rethrows where S: Sequence, S.Element == Identified<Key, Value> {
+        uniquingValueForIDWith combine: (Value, Value) throws -> Value
+    ) rethrows where S: Sequence, S.Element: IdentifiedValue<Key, Value> {
         try self.init(identifiedValues.map { ($0.id, $0.value) }, uniquingKeysWith: combine)
     }
 }
 
-extension Dictionary where Value: Collection {
+public extension Dictionary where Value: Collection {
     /// Creates a new dictionary whose keys are the id values of the collection's identifiables and whose values are
     /// arrays of the elements that had that identifier.
     ///
     /// The arrays in the “values” position of the new dictionary each contain at least one element, with the elements
     /// in the same order as the source sequence if more than one.
-    /// - Parameters identifiables: A sequence of identifiables to group into a dictionary.
+    /// - Parameters identifiedValues: A sequence of identifiables to group into a dictionary.
     init<S, E>(
-        groupingByID identifiedValues: S
-    ) where S: Sequence, S.Element == Identified<Key, E>, Value == [E] {
+        groupingValuesByID identifiedValues: S
+    ) where S: Sequence, S.Element: IdentifiedValue<Key, E>, Key == S.Element.ID, Value == [E] {
         var iterator = identifiedValues.lazy.map(\.id).makeIterator()
         self.init(grouping: identifiedValues.lazy.map(\.value), by: { _ in iterator.next()! })
     }
