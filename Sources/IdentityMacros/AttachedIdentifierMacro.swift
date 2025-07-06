@@ -1,6 +1,6 @@
 //
 //  AttachedIdentifierMacro.swift
-//  Identifier
+//  swift-identity
 //
 //  Created by Óscar Morales Vivó on 6/8/25.
 //

@@ -1,6 +1,6 @@
 //
 //  FreestandingIdentifierMacro.swift
-//
+//  swift-identity
 //
 //  Created by Óscar Morales Vivó on 9/20/23.
 //
