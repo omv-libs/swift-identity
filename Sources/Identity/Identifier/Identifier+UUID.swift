@@ -30,3 +30,12 @@ public extension Identifier where RawValue == UUID, Self: Encodable {
         try container.encode(rawValue.uuidString.lowercased())
     }
 }
+
+public extension Identifier where RawValue == UUID, Self: CustomStringConvertible {
+    /// Default `CustomStringConvertible` implementation for `UUID`-backed ``Identifier`` types.
+    ///
+    /// For sanity's sake, UUID-backed ``Identifier`` types will convert to lowercase strings.
+    var description: String {
+        rawValue.uuidString.lowercased()
+    }
+}
