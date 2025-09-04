@@ -217,7 +217,9 @@ when not every value of the backing type makes for a valid identifier type value
 
 ## Known Issues
 
-* Cannot use `#Identifier` on global scope since Swift does not allow macros to declare new types on global scope.
-* Generating new `Identifier` types using either macro within a function body will not work for similar reasons. This is
-not an expected use case except possibly in unit tests, and there's easy enough workaround in that case (declare the
+* Cannot use ``#Identifier`` on global scope since Swift does not allow macros to declare new types on global scope.
+* Generating new ``Identifier`` types using either macro within a function body will not work for similar reasons. This
+is not an expected use case except possibly in unit tests, and there's easy enough workaround in that case (declare the
 types outside the test function).
+* ``#Identifier`` will also not catch on external qualifiers, like `public`. For those cases you will need to use
+``@Identifier`` instead.
